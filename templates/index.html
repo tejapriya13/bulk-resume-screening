@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Hiring-AI</title>
+<style>
+:root{
+  --purple:#5637d9;
+  --purple2:#6b46e5;
+  --purple-soft:#eee9ff;
+  --bg:#f5f6fb;
+  --card:#ffffff;
+  --text:#14213d;
+  --muted:#64748b;
+  --green:#1cab69;
+  --green-soft:#e4f7ed;
+  --orange:#e99a18;
+  --red:#ef4c5c;
+  --border:#e4e7ef;
+  --shadow:0 8px 25px rgba(31,41,55,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button,input,textarea{font:inherit}
+.topbar{height:115px;background:white;border-bottom:1px solid #e9ebf2;display:flex;align-items:center;justify-content:space-between;padding:0 48px;position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:18px}.brand-icon{width:62px;height:62px;border-radius:18px;background:var(--purple-soft);display:grid;place-items:center;font-size:32px}.brand h1{margin:0;color:var(--purple);font-size:30px}.brand p{margin:6px 0 0;color:#667085;font-size:16px}
+.actions{display:flex;gap:14px}.btn{border:1px solid #d8d2ff;border-radius:12px;padding:15px 23px;font-weight:800;cursor:pointer;background:#fff;color:var(--purple)}.btn.primary{background:var(--purple);color:#fff;border-color:var(--purple)}.btn:disabled{opacity:.55;cursor:not-allowed}
+.layout{display:grid;grid-template-columns:500px 1fr;gap:22px;padding:28px 30px 50px;max-width:1700px;margin:auto}.left,.right{display:flex;flex-direction:column;gap:22px}.card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:26px}
+.section-title{display:flex;align-items:center;gap:12px;font-size:20px;font-weight:900;margin-bottom:20px}.section-icon{width:38px;height:38px;border-radius:11px;background:var(--purple-soft);color:var(--purple);display:grid;place-items:center}
+.dropzone{border:2px dashed #cfd2e8;border-radius:15px;padding:30px;text-align:center;cursor:pointer;min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px}.dropzone.drag{background:#f8f6ff;border-color:var(--purple)}.upload-symbol{font-size:42px;color:var(--purple)}.dropzone strong{font-size:19px}.dropzone span{color:var(--muted)}
+input[type=file]{display:none}
+.file-list{margin-top:16px;display:flex;flex-direction:column;gap:8px;max-height:250px;overflow:auto}.file-item{display:flex;justify-content:space-between;align-items:center;background:#fafbfe;border:1px solid var(--border);padding:10px 12px;border-radius:10px;font-size:14px}.file-item .remove{color:var(--red);font-weight:800;cursor:pointer}
+textarea{width:100%;min-height:190px;resize:vertical;border:1px solid #d9dce8;border-radius:14px;padding:15px;outline:none}.counter{font-size:13px;color:var(--muted);margin-top:7px;text-align:right}
+.analyze{width:100%;padding:17px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--purple),#6842e6);color:#fff;font-weight:900;font-size:18px;cursor:pointer}.status{margin-top:14px;color:var(--muted);font-size:14px}
+.summary-head{display:flex;justify-content:space-between;align-items:center}.pill{padding:9px 14px;border-radius:999px;background:var(--green-soft);color:#14955b;font-weight:800;font-size:14px}
+.bulk-table{overflow:auto}.bulk-table table{width:100%;border-collapse:collapse;min-width:720px}.bulk-table th,.bulk-table td{text-align:left;padding:14px 12px;border-bottom:1px solid #edf0f5}.bulk-table th{font-size:13px;color:#6b7280;text-transform:uppercase;letter-spacing:.03em}.candidate-link{font-weight:900;color:var(--purple);cursor:pointer}.mini-score{font-weight:900;color:var(--green)}
+.detail{display:none}.detail.active{display:block}
+.detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.info{border:1px solid #edf0f5;border-radius:14px;padding:16px;min-height:105px}.info label{display:block;color:#7b8798;font-size:13px;margin-bottom:8px}.info strong{line-height:1.5}
+.score-grid{display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr;gap:14px;margin-top:20px}.score-card{border:1px solid var(--border);border-radius:16px;padding:20px;background:#fff}.score-card.main{background:linear-gradient(180deg,#effaf5,#fff)}.score-card label{font-weight:800;color:#334155}.score{font-size:42px;font-weight:950;color:var(--green);margin-top:10px}.score.small{font-size:29px;color:var(--purple)}.score.orange{color:var(--orange)}.score-sub{color:var(--muted);font-size:13px;margin-top:5px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}.mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.mode-btn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:13px 12px;font-weight:900;color:#475569;cursor:pointer}.mode-btn.active{background:var(--purple-soft);border-color:#cfc5ff;color:var(--purple)}.insight-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}.insight-card{border:1px solid var(--border);border-radius:16px;padding:20px;background:#fff;min-height:250px}.insight-head{display:flex;align-items:center;gap:12px;margin-bottom:15px}.card-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;font-weight:900}.card-icon.skills{background:#eee9ff;color:#5637d9}.card-icon.strength{background:#e4f7ed;color:#14955b}.card-icon.improve{background:#fff3df;color:#d9870c}.insight-card h3{margin:0;font-size:18px}.insight-card .sub{color:var(--muted);font-size:13px;margin-top:3px}.list{margin:0;padding-left:20px}.list li{margin:9px 0;line-height:1.55}.good li::marker{color:var(--green)}.bad li::marker{color:var(--red)}.improve li::marker{color:var(--orange)}
+.tags{display:flex;flex-wrap:wrap;gap:9px}.tag{padding:8px 12px;border-radius:999px;background:#e9f7f0;color:#15965b;font-weight:800;font-size:13px}.tag.missing{background:#ffebee;color:#e33f50}.tag.related{background:#eaf0ff;color:#3b6fd8}
+.overall{background:#f7f9ff;border:1px solid #dfe7ff;border-radius:14px;padding:18px;line-height:1.75;color:#3d4c68}
+.questions{display:flex;flex-direction:column;gap:10px}.q{border:1px solid #edf0f5;border-radius:12px;padding:13px 15px;background:#fff}
+.explain-title{font-size:19px;font-weight:900;margin-bottom:12px}.note{color:var(--muted);font-size:13px}
+.empty{padding:70px 20px;text-align:center;color:var(--muted)}.empty .big{font-size:48px;margin-bottom:10px}
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.45);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:7px}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}.topbar{padding:0 22px}.detail-grid{grid-template-columns:repeat(2,1fr)}.score-grid{grid-template-columns:1fr 1fr}.three-col,.insight-grid{grid-template-columns:1fr}.left{order:0}}
+@media(max-width:650px){.topbar{height:auto;padding:18px;align-items:flex-start;gap:15px}.actions{display:none}.layout{padding:15px}.card{padding:18px}.detail-grid,.score-grid,.two-col{grid-template-columns:1fr}.brand h1{font-size:24px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">🤖</div>
+    <div><h1>Smart Hiring-AI</h1><p>Smart Resume Analysis powered by Artificial Intelligence</p></div>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="downloadReport()">⇩ Download Report</button>
+    <button class="btn primary" onclick="resetAnalysis()">↻ Start New Analysis</button>
+  </div>
+</header>
+
+<main class="layout">
+<section class="left">
+  <div class="card">
+    <div class="section-title"><div class="section-icon">📄</div>1. Resume Screening</div>
+    <div class="mode-switch">
+      <button id="singleModeBtn" class="mode-btn active" onclick="setMode('single')">👤 Single Resume</button>
+      <button id="bulkModeBtn" class="mode-btn" onclick="setMode('bulk')">👥 Bulk Screening</button>
+    </div>
+    <label class="dropzone" id="dropzone" for="resumeFiles">
+      <div class="upload-symbol">⇧</div>
+      <strong id="uploadTitle">Upload one resume</strong>
+      <span id="uploadSubtitle">PDF or DOCX • Single candidate testing</span>
+      <span id="fileHint">Select one file</span>
+    </label>
+    <input id="resumeFiles" type="file" accept=".pdf,.docx">
+    <div class="file-list" id="fileList"></div>
+  </div>
+  <div class="card">
+    <div class="section-title"><div class="section-icon">▤</div>2. Job Description</div>
+    <textarea id="jobDescription" maxlength="2000" placeholder="Enter the job description and required skills..."></textarea>
+    <div class="counter"><span id="charCount">0</span> / 2000 characters</div>
+  </div>
+
+  <div class="card">
+    <button class="analyze" id="analyzeBtn" onclick="runAnalysis()">🤖 Analyze Resume</button>
+    <div class="status" id="status">Upload one resume and enter the job description to start screening.</div>
+  </div>
+  <div class="card" style="background:#f1f5ff">
+    <strong>🛡 Your data is secure</strong>
+    <p style="margin:7px 0 0;color:#64748b">Resumes are processed locally by this application and are not intentionally stored permanently by the interface.</p>
+  </div>
+</section>
+
+<section class="right">
+  <div class="card" id="resultsCard">
+    <div class="summary-head">
+      <div class="section-title" style="margin-bottom:0"><div class="section-icon">⌁</div><span id="resultsTitle">Single Resume Result</span></div>
+      <div class="pill" id="completedPill">Ready for analysis</div>
+    </div>
+    <div id="bulkResults" class="empty"><div class="big">📋</div><strong>Bulk candidate results will appear here</strong><p>Every candidate keeps the same detailed screening information as the single-resume view.</p></div>
+  </div>
+
+  <div id="candidateDetail" class="detail"></div>
+</section>
+</main>
+
+<script>
+let selectedFiles = [];
+let analysisData = [];
+let screeningMode = 'single';
+
+const fileInput = document.getElementById('resumeFiles');
+const fileList = document.getElementById('fileList');
+const dropzone = document.getElementById('dropzone');
+const jobDescription = document.getElementById('jobDescription');
+const charCount = document.getElementById('charCount');
+const statusBox = document.getElementById('status');
+
+fileInput.addEventListener('change', e => { selectedFiles=[]; addFiles([...e.target.files]); });
+jobDescription.addEventListener('input', () => charCount.textContent = jobDescription.value.length);
+
+['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => {e.preventDefault();dropzone.classList.add('drag')}));
+['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => {e.preventDefault();dropzone.classList.remove('drag')}));
+dropzone.addEventListener('drop', e => addFiles([...e.dataTransfer.files]));
+
+function setMode(mode){
+  screeningMode=mode;
+  document.getElementById('singleModeBtn').classList.toggle('active',mode==='single');
+  document.getElementById('bulkModeBtn').classList.toggle('active',mode==='bulk');
+  fileInput.multiple=(mode==='bulk');
+  document.getElementById('uploadTitle').textContent=mode==='single'?'Upload one resume':'Upload multiple resumes';
+  document.getElementById('uploadSubtitle').textContent=mode==='single'?'PDF or DOCX • Single candidate testing':'PDF or DOCX • Bulk screening supported';
+  document.getElementById('fileHint').textContent=mode==='single'?'Select one file':'Select one or many files';
+  document.getElementById('analyzeBtn').textContent=mode==='single'?'🤖 Analyze Resume':'🤖 Analyze All Resumes';
+  statusBox.textContent=mode==='single'?'Upload one resume and enter the job description to start screening.':'Upload multiple resumes and enter the job description to start bulk screening.';
+  selectedFiles=[]; fileInput.value=''; renderFileList();
+}
+function addFiles(files){
+  const allowed=files.filter(file=>['application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type)||/\.(pdf|docx)$/i.test(file.name));
+  if(screeningMode==='single') selectedFiles=allowed.slice(0,1);
+  else for(const file of allowed){if(!selectedFiles.some(x=>x.name===file.name&&x.size===file.size))selectedFiles.push(file);}
+  renderFileList();
+}
+function renderFileList(){
+  fileList.innerHTML=selectedFiles.map((f,i)=>`<div class="file-item"><span>📄 ${escapeHtml(f.name)}</span><span class="remove" onclick="removeFile(${i})">Remove</span></div>`).join('');
+  document.getElementById('fileHint').textContent=selectedFiles.length?`${selectedFiles.length} resume${selectedFiles.length>1?'s':''} selected`:(screeningMode==='single'?'Select one file':'Select one or many files');
+}
+function removeFile(i){selectedFiles.splice(i,1);renderFileList()}
+async function runAnalysis(){
+  if(!selectedFiles.length){statusBox.textContent='Please upload a PDF or DOCX resume.';return}
+  if(!jobDescription.value.trim()){statusBox.textContent='Please enter a job description.';return}
+  if(screeningMode==='bulk') return analyzeBulk();
+  const btn=document.getElementById('analyzeBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Analyzing resume...';statusBox.textContent='Screening the candidate...';
+  const form=new FormData();form.append('resume',selectedFiles[0]);form.append('job_description',jobDescription.value);
+  try{const response=await fetch('/analyze',{method:'POST',body:form});const data=await response.json();if(!response.ok)throw new Error(data.error||'Analysis failed');analysisData=[data];document.getElementById('completedPill').textContent='Analysis Completed ✓';document.getElementById('resultsTitle').textContent='Single Resume Result';document.getElementById('bulkResults').className='empty';document.getElementById('bulkResults').innerHTML='<div class="big">👤</div><strong>Single candidate analysis completed</strong><p>Open the detailed candidate view below.</p>';showCandidate(0);statusBox.textContent='Single resume analysis completed successfully.';}catch(err){statusBox.textContent=err.message}finally{btn.disabled=false;btn.textContent='🤖 Analyze Resume'}
+}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function arr(v){return Array.isArray(v)?v:[]}
+function list(items, cls=''){return arr(items).length ? `<ul class="list ${cls}">${arr(items).map(x=>`<li>${escapeHtml(typeof x==='string'?x:x.skill||'')}</li>`).join('')}</ul>` : '<p class="note">No information detected.</p>'}
+function tags(items, cls=''){return arr(items).length ? `<div class="tags">${arr(items).map(x=>`<span class="tag ${cls}">${escapeHtml(typeof x==='string'?x:x.skill||'')}</span>`).join('')}</div>` : '<p class="note">None detected.</p>'}
+
+async function analyzeBulk(){
+  if(!selectedFiles.length){statusBox.textContent='Please upload at least one PDF or DOCX resume.';return}
+  if(!jobDescription.value.trim()){statusBox.textContent='Please enter a job description.';return}
+  const btn=document.getElementById('analyzeBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Analyzing resumes...';
+  statusBox.textContent=`Screening ${selectedFiles.length} resume${selectedFiles.length>1?'s':''}...`;
+
+  const form=new FormData();
+  selectedFiles.forEach(f=>form.append('resumes',f));
+  form.append('job_description',jobDescription.value);
+
+  try{
+    const response=await fetch('/analyze-bulk',{method:'POST',body:form});
+    const data=await response.json();
+    if(!response.ok) throw new Error(data.error||'Bulk analysis failed');
+    analysisData=data.results||[];
+    renderBulkResults(data);
+    document.getElementById('completedPill').textContent=`${data.successful} analyzed ✓`;document.getElementById('resultsTitle').textContent='Bulk Screening Results';
+    statusBox.textContent=`Completed: ${data.successful} analyzed, ${data.failed} failed.`;
+  }catch(err){
+    statusBox.textContent=err.message;
+  }finally{
+    btn.disabled=false;btn.textContent='🤖 Analyze All Resumes';
+  }
+}
+
+function renderBulkResults(data){
+  const container=document.getElementById('bulkResults');
+  if(!data.results?.length){
+    container.innerHTML='<div class="empty">No resumes could be analyzed.</div>';return;
+  }
+  container.className='bulk-table';
+  container.innerHTML=`<table><thead><tr><th>#</th><th>Candidate</th><th>Resume</th><th>Final Score</th><th>Semantic</th><th>ATS</th><th>Skills</th></tr></thead><tbody>
+  ${data.results.map((r,i)=>`<tr>
+    <td>${i+1}</td>
+    <td><span class="candidate-link" onclick="showCandidate(${i})">${escapeHtml(r.candidate_name)}</span></td>
+    <td>${escapeHtml(r.file_name)}</td>
+    <td><span class="mini-score">${Number(r.final_candidate_score||0).toFixed(2)}%</span></td>
+    <td>${Number(r.semantic_match_score||0).toFixed(2)}%</td>
+    <td>${Number(r.ats_score||0).toFixed(2)}%</td>
+    <td>${arr(r.matched_skills).length} matched</td>
+  </tr>`).join('')}</tbody></table>
+  ${data.errors?.length?`<div style="margin-top:14px;color:#c43b48"><strong>Files with errors:</strong> ${data.errors.map(e=>escapeHtml(e.file_name)+': '+escapeHtml(e.error)).join(' • ')}</div>`:''}
+  <div class="note" style="margin-top:15px">Click a candidate name to open the complete screening view.</div>`;
+  showCandidate(0);
+}
+
+function showCandidate(index){
+  const r=analysisData[index]; if(!r)return;
+  const d=document.getElementById('candidateDetail');
+  d.className='detail active';
+  d.innerHTML=`
+  <div class="card">
+    <div class="summary-head">
+      <div class="section-title" style="margin-bottom:0"><div class="section-icon">♟</div>Candidate Details</div>
+      <div class="pill">Analysis Completed ✓</div>
+    </div>
+    <div class="detail-grid" style="margin-top:20px">
+      <div class="info"><label>Name</label><strong>${escapeHtml(r.candidate_name)}</strong></div>
+      <div class="info"><label>Email</label><strong>${escapeHtml(r.email)}</strong></div>
+      <div class="info"><label>Phone</label><strong>${escapeHtml(r.phone)}</strong></div>
+      <div class="info"><label>Education</label><strong>${escapeHtml(arr(r.education).join(' | ')||'Not Found')}</strong></div>
+    </div>
+    <div class="info" style="margin-top:14px"><label>Experience</label><strong>${escapeHtml(arr(r.experience).join(' | ')||'Not Found')}</strong></div>
+
+    <div class="score-grid">
+      <div class="score-card main"><label>Final Candidate Score</label><div class="score">${Number(r.final_candidate_score||0).toFixed(2)}%</div><div class="score-sub">Overall screening match</div></div>
+      <div class="score-card"><label>Semantic Match</label><div class="score small">${Number(r.semantic_match_score||0).toFixed(2)}%</div><div class="score-sub">Meaning and context</div></div>
+      <div class="score-card"><label>ATS Score</label><div class="score small">${Number(r.ats_score||0).toFixed(2)}%</div><div class="score-sub">Resume compatibility</div></div>
+      <div class="score-card"><label>Skill Match</label><div class="score small orange">${jobSkillMatch(r)}%</div><div class="score-sub">Required skill overlap</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="explain-title">Candidate Overall View</div>
+    <div class="overall">${escapeHtml(r.candidate_overall_view||'No overall view was generated.')}</div>
+    <p class="note" style="margin-top:10px">This section explains the screening result in words rather than showing contribution percentages.</p>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight-card"><div class="insight-head"><div class="card-icon skills">🧠</div><div><h3>Skills Analysis</h3><div class="sub">Matched, missing and related skills</div></div></div><strong>Matched Skills</strong>${tags(r.matched_skills)}<div style="height:14px"></div><strong style="color:#e33f50">Missing Skills</strong>${tags(r.missing_skills,'missing')}<div style="height:14px"></div><strong style="color:#3973d6">Related Skills</strong>${tags(r.related_skills,'related')}</div>
+    <div class="insight-card"><div class="insight-head"><div class="card-icon strength">🏆</div><div><h3>Strengths</h3><div class="sub">Positive evidence from the resume</div></div></div>${list(r.strengths,'good')}<hr style="border:0;border-top:1px solid #edf0f5;margin:18px 0"><strong style="color:#e33f50">Weaknesses</strong>${list(r.weaknesses,'bad')}</div>
+    <div class="insight-card"><div class="insight-head"><div class="card-icon improve">💡</div><div><h3>Improvement Suggestions</h3><div class="sub">Practical areas to strengthen</div></div></div>${list(r.improvement_suggestions,'improve')}</div>
+  </div>
+
+  <div class="card"><div class="explain-title">Interview Questions</div><div class="questions">${arr(r.interview_questions).map((q,i)=>`<div class="q"><strong>${i+1}.</strong> ${escapeHtml(q)}</div>`).join('')}</div></div>
+  `;
+  window.scrollTo({top:d.offsetTop-20,behavior:'smooth'});
+}
+function jobSkillMatch(r){ return Number(r.skill_match_score ?? 0).toFixed(2); }
+function resetAnalysis(){
+  selectedFiles=[];analysisData=[];fileInput.value='';jobDescription.value='';charCount.textContent='0';renderFileList();
+  document.getElementById('bulkResults').className='empty';
+  document.getElementById('bulkResults').innerHTML='<div class="big">📋</div><strong>Bulk candidate results will appear here</strong><p>Every candidate keeps the same detailed screening information as the single-resume view.</p>';
+  document.getElementById('candidateDetail').className='detail';
+  document.getElementById('candidateDetail').innerHTML='';
+  document.getElementById('completedPill').textContent='Ready for analysis';
+  setMode('single');
+}
+function downloadReport(){
+  if(!analysisData.length){alert('Run a bulk analysis first.');return}
+  const rows=analysisData.map(r=>({
+    candidate_name:r.candidate_name,file_name:r.file_name,email:r.email,phone:r.phone,
+    final_candidate_score:r.final_candidate_score,semantic_match_score:r.semantic_match_score,
+    ats_score:r.ats_score,matched_skills:arr(r.matched_skills).join('; '),
+    missing_skills:arr(r.missing_skills).join('; '),strengths:arr(r.strengths).join(' | '),
+    weaknesses:arr(r.weaknesses).join(' | '),improvement_suggestions:arr(r.improvement_suggestions).join(' | '),
+    candidate_overall_view:r.candidate_overall_view
+  }));
+  const headers=Object.keys(rows[0]);
+  const csv=[headers.join(','),...rows.map(x=>headers.map(h=>`"${String(x[h]??'').replace(/"/g,'""')}"`).join(','))].join('\\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='smart_hiring_bulk_screening_report.csv';a.click();
+}
+</script>
+</body>
+</html>
